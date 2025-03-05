@@ -5,7 +5,7 @@ pipeline {
         DOCKER_TAG = "latest"
         DOCKER_REPO = "rohith1305/my-jenkins-app"
         DOCKER_CREDENTIALS_ID = "93c470a0-e8fe-425c-8f55-932aae8919d4" // Jenkins credentials ID
-        CONTAINER_NAME = "my-container"
+        CONTAINER_NAME = "mycontainer"
     }
     stages {
         stage('Clone Repository') {
