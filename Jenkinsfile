@@ -36,7 +36,7 @@ pipeline {
                 script {
                     sh "docker stop my-container5 || true"
                     sh "docker rm my-container5 || true"
-                    sh "docker run -d -p 8085:80 --name my-container6 ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    sh "docker run -d -p 8084:80 --name my-container5 ${DOCKER_IMAGE}:${DOCKER_TAG}"
                 }
             }
         }
@@ -56,6 +56,8 @@ pipeline {
                     sh """
                     sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "
                     docker pull ${DOCKER_REPO}:${DOCKER_TAG} &&
+                    docker stop my-container6 || true &&
+                    docker rm my-container6 || true &&
                     docker run -d -p 80:80 --name my-container6 ${DOCKER_REPO}:${DOCKER_TAG}
                     "
                     """
