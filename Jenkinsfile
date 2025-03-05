@@ -31,11 +31,7 @@ pipeline {
         stage('Run Container Locally') {
     steps {
         script {
-            sh '''
-            docker ps -a -q --filter "name=my-container" | grep -q . && docker stop my-container && docker rm my-container || true
-            docker run -d -p 8081:80 --name my-container ${DOCKER_IMAGE}:${DOCKER_TAG}
-            '''
-        }
+              sh "docker run -d -p 8081:80 --name my-container ${DOCKER_IMAGE}:${DOCKER_TAG}"        }
     }
 }
 
