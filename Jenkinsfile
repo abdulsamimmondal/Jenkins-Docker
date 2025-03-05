@@ -31,7 +31,7 @@ pipeline {
         stage('Run Container Locally') {
     steps {
         script {
-              sh "docker run -d -p 8081:80 --name my-container1 ${DOCKER_IMAGE}:${DOCKER_TAG}"        }
+              sh "docker run -d -p 8081:80 --name my-container2 ${DOCKER_IMAGE}:${DOCKER_TAG}"        }
     }
 }
 
