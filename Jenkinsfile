@@ -5,9 +5,7 @@ pipeline {
         DOCKER_TAG = "latest"
         DOCKER_REPO = "rohith1305/my-jenkins-app"
         DOCKER_CREDENTIALS_ID = "93c470a0-e8fe-425c-8f55-932aae8919d4" // Jenkins credentials ID
-        SSH_USER = "master"
-        SSH_HOST = "192.168.203.128"
-        SSH_PASSWORD = "root"  // Consider using Jenkins credentials instead of hardcoding
+        CONTAINER_NAME = "my-container-$(date +%s)" // Unique container name
     }
     stages {
         stage('Clone Repository') {
@@ -34,9 +32,14 @@ pipeline {
         stage('Run Container Locally') {
             steps {
                 script {
-                    sh "docker stop my-container5 || true"
-                    sh "docker rm my-container5 || true"
-                    sh "docker run -d -p 8084:80 --name my-container5 ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    sh """
+                        # Stop and remove any existing container with the same name (if exists)
+                        docker ps -a -q --filter name=my-container | xargs -r docker stop || true
+                        docker ps -a -q --filter name=my-container | xargs -r docker rm || true
+
+                        # Run a new container with a unique name
+                        docker run -d -p 8084:80 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    """
                 }
             }
         }
@@ -54,12 +57,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                    sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "
-                    docker pull ${DOCKER_REPO}:${DOCKER_TAG} &&
-                    docker stop my-container6 || true &&
-                    docker rm my-container6 || true &&
-                    docker run -d -p 80:80 --name my-container6 ${DOCKER_REPO}:${DOCKER_TAG}
-                    "
+                        sshpass -p "root" ssh -o StrictHostKeyChecking=no master@192.168.203.128 '
+                        docker pull ${DOCKER_REPO}:${DOCKER_TAG} &&
+                        docker ps -a -q --filter name=my-container | xargs -r docker stop || true &&
+                        docker ps -a -q --filter name=my-container | xargs -r docker rm || true &&
+                        docker run -d -p 80:80 --name ${CONTAINER_NAME} ${DOCKER_REPO}:${DOCKER_TAG}'
                     """
                 }
             }
