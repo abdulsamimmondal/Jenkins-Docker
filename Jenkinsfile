@@ -52,7 +52,7 @@ pipeline {
         stage('Deploy to Server') {
             steps {
                 script {
-                    sh "ssh master@remote-server 'docker pull ${DOCKER_REPO}:${DOCKER_TAG} && docker run -d -p 80:80 ${DOCKER_REPO}:${DOCKER_TAG}'"
+                    sh "ssh master@192.168.203.128 'docker pull ${DOCKER_REPO}:${DOCKER_TAG} && docker run -d -p 80:80 ${DOCKER_REPO}:${DOCKER_TAG}'"
                 }
             }
         }
