@@ -31,7 +31,7 @@ pipeline {
         stage('Run Container Locally') {
     steps {
         script {
-              sh "docker run -d -p 8083:80 --name my-container4 ${DOCKER_IMAGE}:${DOCKER_TAG}"        }
+              sh "docker run -d -p 8084:80 --name my-container5 ${DOCKER_IMAGE}:${DOCKER_TAG}"        }
     }
 }
 
@@ -48,7 +48,8 @@ pipeline {
         stage('Deploy to Server') {
             steps {
                 script {
-                    sh "ssh master@192.168.203.128 'docker pull ${DOCKER_REPO}:${DOCKER_TAG} && docker run -d -p 80:80 ${DOCKER_REPO}:${DOCKER_TAG}'"
+                    sh "sshpass -p "root" ssh master@192.168.203.128 docker pull rohith1305/my-jenkins-app:latest && docker run -d -p 80:80 rohith1305/my-jenkins-app:latest
+'"
                 }
             }
         }
