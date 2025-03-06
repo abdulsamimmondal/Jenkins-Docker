@@ -7,12 +7,11 @@ pipeline {
         DOCKER_CREDENTIALS_ID = "docker-hub-credentials" // Jenkins credentials ID
         CONTAINER_NAME = "mycontainer11"
         CONTAINER_NAME1 = "mycontainer12"
-
     }
     stages {
         stage('Clone Repository') {
             steps {
-                git url:'https://github.com/abdulsamimmondal/Jenkins-Docker.git',branch:'main'
+                git url: 'https://github.com/abdulsamimmondal/Jenkins-Docker.git', branch: 'main'
             }
         }
         stage('Docker Login') {
@@ -55,20 +54,21 @@ pipeline {
                 }
             }
         }
-       stage('Deploy to Server') {
-    steps {
-        script {
-            // Ensure the SSH key is used for the SSH connection
-            withCredentials([sshUserPrivateKey(credentialsId: '00e98742-3c7a-4590-be50-a27521d2bf0b', keyFileVariable: 'SSH_KEY')]) {
-                sh """
-                    ssh -o StrictHostKeyChecking=no -i \$SSH_KEY master@192.168.203.128 '
-                    docker pull samimmondal/my-jenkins-app:latest &&
-                    docker ps -a -q --filter name=mycontainer12 | xargs -r docker stop || true &&
-                    docker ps -a -q --filter name=mycontainer12 | xargs -r docker rm || true &&
-                    docker run -d -p 80:80 --name mycontainer12 samimmondal/my-jenkins-app:latest'
-                """
+        stage('Deploy to Server') {
+            steps {
+                script {
+                    // Ensure the SSH key is used for the SSH connection
+                    withCredentials([sshUserPrivateKey(credentialsId: '00e98742-3c7a-4590-be50-a27521d2bf0b', keyFileVariable: 'SSH_KEY')]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no -i \$SSH_KEY master@192.168.203.128 '
+                            docker pull ${DOCKER_REPO}:${DOCKER_TAG} &&
+                            docker ps -a -q --filter name=${CONTAINER_NAME1} | xargs -r docker stop || true &&
+                            docker ps -a -q --filter name=${CONTAINER_NAME1} | xargs -r docker rm || true &&
+                            docker run -d -p 80:80 --name ${CONTAINER_NAME1} ${DOCKER_REPO}:${DOCKER_TAG}'
+                        """
+                    }
+                }
             }
         }
     }
 }
-
