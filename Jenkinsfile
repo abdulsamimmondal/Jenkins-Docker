@@ -59,11 +59,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                        sshpass -p "root" ssh -o StrictHostKeyChecking=no master@192.168.203.128 '
-                        docker pull ${DOCKER_REPO}:${DOCKER_TAG} &&
-                        docker ps -a -q --filter name=${CONTAINER_NAME1} | xargs -r docker stop || true &&
-                        docker ps -a -q --filter name=${CONTAINER_NAME1} | xargs -r docker rm || true &&
-                        docker run -d -p 80:80 --name ${CONTAINER_NAME1} ${DOCKER_REPO}:${DOCKER_TAG}'
+                        ssh -o StrictHostKeyChecking=no master@192.168.203.128 '
+                        docker pull samimmondal/my-jenkins-app:latest &&
+                        docker ps -a -q --filter name=mycontainer12 | xargs -r docker stop || true &&
+                        docker ps -a -q --filter name=mycontainer12 | xargs -r docker rm || true &&
+                        docker run -d -p 80:80 --name mycontainer12 samimmondal/my-jenkins-app:latest'
                     """
                 }
             }
