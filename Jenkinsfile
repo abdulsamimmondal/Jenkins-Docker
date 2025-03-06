@@ -25,7 +25,7 @@ pipeline{
 	stage('Run Container Locally'){
 		steps {
 			script {
-				sh "docker run -d -p 8081:80 --name jenkins-docker ${DOCKER_IMAGE}:latest"
+				sh "docker run -d -p 8082:80 --name jenkins-docker ${DOCKER_IMAGE}:latest"
 			}
 		}
 }
